@@ -61,30 +61,47 @@
             Vamos otimizar as áreas de apoio do seu escritório?
           </h2>
           <form
-            action="http://formsubmit.co/webpedrod@gmail.com/"
+            id="form"
             method="POST"
             style="gap: 10px"
             class="flex align-center column"
           >
             <input
+              type="hidden"
+              name="subject"
+              value="Novo lead chegou do site"
+            />
+            <input
+              type="hidden"
+              name="access_key"
+              value="abce6323-56a1-49fe-a141-cf9b1fd2c47e"
+            />
+            <div class="h-captcha" data-captcha="false"></div>
+
+            <input
               class="main-form-input"
               placeholder="Digite seu nome"
               type="text"
+              name="nome"
             />
             <input
               class="main-form-input"
               placeholder="Digite seu telefone"
               type="text"
+              name="telefone"
             />
             <input
               class="main-form-input"
               placeholder="Digite seu e-mail"
-              type="text"
+              type="email"
+              name="email"
             />
             <textarea
               class="text-area-input"
               placeholder="Digite sua mensagem aqui"
+              name="mensagem"
             ></textarea>
+            <div id="snackbar">Email enviado com sucesso!</div>
             <button type="submit" class="main-button">Entrar em contato</button>
           </form>
         </div>
@@ -198,31 +215,56 @@
         <h2 style="color: #1d1d5b; font-weight: normal" class="roboto-slab">
           Inicie um contato conosco.
         </h2>
-        <input
-          class="second-form-input"
-          placeholder="Digite seu nome"
-          type="text"
-        />
-        <input
-          class="second-form-input"
-          placeholder="Digite o nome da sua empresa"
-          type="text"
-        />
-        <input
-          class="second-form-input"
-          placeholder="Digite seu número de telefone"
-          type="text"
-        />
-        <input
-          class="second-form-input"
-          placeholder="Digite seu e-mail"
-          type="text"
-        />
-        <textarea
-          class="second-text-area-input"
-          placeholder="Escreva sua mensagem"
-        ></textarea>
-        <button class="second-button">Vamos nos falar</button>
+        <form
+          id="form2"
+          method="POST"
+          style="gap: 10px"
+          class="flex align-center column"
+        >
+          <input
+            type="hidden"
+            name="subject"
+            value="Novo lead chegou do site"
+          />
+          <input
+            type="hidden"
+            name="access_key"
+            value="abce6323-56a1-49fe-a141-cf9b1fd2c47e"
+          />
+          <div class="h-captcha" data-captcha="false"></div>
+
+          <input
+            class="second-form-input"
+            placeholder="Digite seu nome"
+            type="text"
+            name="nome"
+          />
+          <input
+            class="second-form-input"
+            placeholder="Digite o nome da sua empresa"
+            type="text"
+            name="empresa"
+          />
+          <input
+            class="second-form-input"
+            placeholder="Digite seu número de telefone"
+            type="text"
+            name="telefone"
+          />
+          <input
+            class="second-form-input"
+            placeholder="Digite seu e-mail"
+            type="email"
+            name="email"
+          />
+          <textarea
+            class="second-text-area-input"
+            placeholder="Digite sua mensagem aqui"
+            name="mensagem"
+          ></textarea>
+          <div id="snackbar">Email enviado com sucesso!</div>
+          <button type="submit" class="main-button">Vamos nos falar</button>
+        </form>
       </div>
     </section>
     <footer>
@@ -249,3 +291,91 @@
     </footer>
   </body>
 </html>
+
+<script>
+  const form = document.getElementById("form");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+    var toaster = document.getElementById("snackbar");
+    console.log(json);
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: json,
+    })
+      .then(async (response) => {
+        let json = await response.json();
+        if (response.status == 200) {
+          toaster.className = "show";
+          setTimeout(function () {
+            toaster.className = toaster.className.replace("show", "");
+          }, 3000);
+        } else {
+          console.log(response);
+          toaster.style.backgroundColor = "red";
+          toaster.className = "show";
+          setTimeout(function () {
+            toaster.className = toaster.className.replace("show", "");
+          }, 3000);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toaster.style.backgroundColor = "red";
+        toaster.innerHTML = "Algo deu errado!";
+        toaster.className = "show";
+      })
+      .then(function () {
+        form.reset();
+      });
+  });
+
+  const form2 = document.getElementById("form2");
+
+  form2.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const form2Data = new FormData(form2);
+    const object = Object.fromEntries(form2Data);
+    const json2 = JSON.stringify(object);
+    var toaster = document.getElementById("snackbar");
+
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: json2,
+    })
+      .then(async (response) => {
+        let json2 = await response.json();
+        if (response.status == 200) {
+          toaster.className = "show";
+          setTimeout(function () {
+            toaster.className = toaster.className.replace("show", "");
+          }, 3000);
+        } else {
+          toaster.style.backgroundColor = "red";
+          toaster.className = "show";
+          setTimeout(function () {
+            toaster.className = toaster.className.replace("show", "");
+          }, 3000);
+        }
+      })
+      .catch((error) => {
+        toaster.style.backgroundColor = "red";
+        toaster.innerHTML = "Algo deu errado!";
+        toaster.className = "show";
+      })
+      .then(function () {
+        form2.reset();
+      });
+  });
+</script>
